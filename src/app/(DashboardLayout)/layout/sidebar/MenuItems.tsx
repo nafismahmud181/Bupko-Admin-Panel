@@ -7,6 +7,7 @@ import {
   IconTypography,
   IconUserPlus,
   IconBook,
+  IconList,
 } from "@tabler/icons-react";
 
 import { uniqueId } from "lodash";
@@ -64,6 +65,12 @@ const Menuitems = [
     title: "Upload Book",
     icon: IconBook,
     href: "/book-upload",
+  },
+  {
+    id: uniqueId(),
+    title: "Books List",
+    icon: IconList,
+    href: "/books-list",
   },
   {
     navlabel: true,
