@@ -8,13 +8,21 @@ import {
   Card,
   CardContent,
   Grid,
-  Input
+  Input,
+  CircularProgress,
+  Alert
 } from '@mui/material';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { collection, addDoc } from 'firebase/firestore';
+import { storage, /* db, */ secondaryDb } from '@/utils/firebase';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
 
 const BookUpload = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
   const [bookData, setBookData] = useState({
     title: '',
     author: '',
@@ -37,11 +45,43 @@ const BookUpload = () => {
     }));
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // Handle form submission here
-    console.log('Book Data:', bookData);
-    console.log('Selected Image:', selectedImage);
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+
+    try {
+      if (!selectedImage) {
+        throw new Error('Please select an image');
+      }
+
+      // Upload image to Firebase Storage
+      const storageRef = ref(storage, `book-covers/${selectedImage.name}`);
+      const uploadResult = await uploadBytes(storageRef, selectedImage);
+      const imageUrl = await getDownloadURL(uploadResult.ref);
+
+      // Add book data to Firestore
+      const bookRef = await addDoc(collection(secondaryDb, 'books-aff'), {
+        ...bookData,
+        imageUrl,
+        createdAt: new Date().toISOString()
+      });
+
+      setSuccess(true);
+      setBookData({
+        title: '',
+        author: '',
+        description: '',
+        price: '',
+        isbn: ''
+      });
+      setSelectedImage(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -49,8 +89,18 @@ const BookUpload = () => {
       <DashboardCard title="Upload Book">
         <form onSubmit={handleSubmit}>
           <Box sx={{ p: 2 }}>
+            {error && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {error}
+              </Alert>
+            )}
+            {success && (
+              <Alert severity="success" sx={{ mb: 2 }}>
+                Book uploaded successfully!
+              </Alert>
+            )}
             <Grid container spacing={3}>
-              <Grid item xs={12} lg={6}>
+              <Grid>
                 <TextField
                   fullWidth
                   label="Book Title"
@@ -89,7 +139,7 @@ const BookUpload = () => {
                   required
                 />
               </Grid>
-              <Grid item xs={12} lg={6}>
+              <Grid>
                 <TextField
                   fullWidth
                   label="Description"
@@ -120,14 +170,15 @@ const BookUpload = () => {
                   )}
                 </Box>
               </Grid>
-              <Grid item xs={12}>
+              <Grid>
                 <Button
                   variant="contained"
                   color="primary"
                   type="submit"
+                  disabled={loading}
                   sx={{ mt: 2 }}
                 >
-                  Upload Book
+                  {loading ? <CircularProgress size={24} /> : 'Upload Book'}
                 </Button>
               </Grid>
             </Grid>
