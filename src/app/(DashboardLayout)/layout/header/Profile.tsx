@@ -10,16 +10,34 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-
 import { IconListCheck, IconMail, IconUser } from "@tabler/icons-react";
+import { signOut } from 'firebase/auth';
+import { auth } from '@/utils/firebase';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Profile = () => {
   const [anchorEl2, setAnchorEl2] = useState(null);
+  const { user } = useAuth();
+  const router = useRouter();
+
   const handleClick2 = (event: any) => {
     setAnchorEl2(event.currentTarget);
   };
+
   const handleClose2 = () => {
     setAnchorEl2(null);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      localStorage.removeItem('keepLoggedIn');
+      handleClose2(); // Close the menu
+      router.push('/authentication/login-modern');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   return (
@@ -83,11 +101,10 @@ const Profile = () => {
         </MenuItem>
         <Box mt={1} py={1} px={2}>
           <Button
-            href="/authentication/login"
             variant="outlined"
             color="primary"
-            component={Link}
             fullWidth
+            onClick={handleLogout}
           >
             Logout
           </Button>
