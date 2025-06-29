@@ -26,9 +26,9 @@ const BookUpload = () => {
   const [bookData, setBookData] = useState({
     title: '',
     author: '',
-    description: '',
+    'disc-price': '',
     price: '',
-    isbn: ''
+    'aff-link': ''
   });
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,9 +62,11 @@ const BookUpload = () => {
       const imageUrl = await getDownloadURL(uploadResult.ref);
 
       // Add book data to Firestore
+      const { price, ...restBookData } = bookData;
       const bookRef = await addDoc(collection(secondaryDb, 'books-aff'), {
-        ...bookData,
-        imageUrl,
+        ...restBookData,
+        ['actual-price']: price,
+        ['image-url']: imageUrl,
         createdAt: new Date().toISOString()
       });
 
@@ -72,9 +74,9 @@ const BookUpload = () => {
       setBookData({
         title: '',
         author: '',
-        description: '',
+        'disc-price': '',
         price: '',
-        isbn: ''
+        'aff-link': ''
       });
       setSelectedImage(null);
     } catch (err) {
@@ -121,9 +123,9 @@ const BookUpload = () => {
                 />
                 <TextField
                   fullWidth
-                  label="ISBN"
-                  name="isbn"
-                  value={bookData.isbn}
+                  label="Affiliate Link"
+                  name="aff-link"
+                  value={bookData['aff-link']}
                   onChange={handleInputChange}
                   margin="normal"
                   required
@@ -142,13 +144,11 @@ const BookUpload = () => {
               <Grid>
                 <TextField
                   fullWidth
-                  label="Description"
-                  name="description"
-                  value={bookData.description}
+                  label="Discount Price"
+                  name="disc-price"
+                  value={bookData['disc-price']}
                   onChange={handleInputChange}
                   margin="normal"
-                  multiline
-                  rows={4}
                   required
                 />
                 <Box sx={{ mt: 2 }}>
