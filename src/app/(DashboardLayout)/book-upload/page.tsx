@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   Box,
   Typography,
@@ -10,13 +10,16 @@ import {
   Grid,
   Input,
   CircularProgress,
-  Alert
+  Alert,
+  IconButton
 } from '@mui/material';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { collection, addDoc } from 'firebase/firestore';
 import { storage, /* db, */ secondaryDb } from '@/utils/firebase';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CloseIcon from '@mui/icons-material/Close';
 
 const BookUpload = () => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -30,6 +33,7 @@ const BookUpload = () => {
     price: '',
     'aff-link': ''
   });
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -79,6 +83,7 @@ const BookUpload = () => {
         'aff-link': ''
       });
       setSelectedImage(null);
+      if (fileInputRef.current) fileInputRef.current.value = '';
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -89,8 +94,17 @@ const BookUpload = () => {
   return (
     <PageContainer title="Book Upload" description="Upload new book information">
       <DashboardCard title="Upload Book">
-        <form onSubmit={handleSubmit}>
-          <Box sx={{ p: 2 }}>
+        <Box
+          sx={{
+            maxWidth: 800,
+            mx: 'auto',
+            p: { xs: 2, md: 4 },
+            borderRadius: 3,
+            boxShadow: 3,
+            backgroundColor: 'background.paper',
+          }}
+        >
+          <form onSubmit={handleSubmit}>
             {error && (
               <Alert severity="error" sx={{ mb: 2 }}>
                 {error}
@@ -101,8 +115,91 @@ const BookUpload = () => {
                 Book uploaded successfully!
               </Alert>
             )}
-            <Grid container spacing={3}>
-              <Grid>
+            <Typography variant="h5" fontWeight={600} gutterBottom align="center" sx={{ mb: 3 }}>
+              Enter Book Details
+            </Typography>
+            <Grid container spacing={4}>
+              <Grid item xs={12} md={6}>
+                <Typography variant="subtitle1" fontWeight={500} sx={{ mb: 1 }}>
+                  Book Cover Image
+                </Typography>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: '2px dashed',
+                    borderColor: 'primary.light',
+                    borderRadius: 2,
+                    p: 2,
+                    mb: 2,
+                    minHeight: 220,
+                    background: selectedImage ? 'rgba(0,0,0,0.02)' : 'none',
+                  }}
+                >
+                  <Input
+                    type="file"
+                    inputRef={fileInputRef}
+                    onChange={handleImageChange}
+                    sx={{ mb: 2 }}
+                    inputProps={{ accept: 'image/*' }}
+                  />
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '100%',
+                      minHeight: 140,
+                      borderRadius: 2,
+                      background: '#fafafa',
+                      border: '1px solid #eee',
+                      p: 1,
+                      position: 'relative',
+                    }}
+                  >
+                    {selectedImage ? (
+                      <>
+                        <Box sx={{ position: 'relative', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                          <img
+                            src={URL.createObjectURL(selectedImage)}
+                            alt="Book Cover Preview"
+                            style={{ maxWidth: '100%', maxHeight: 120, borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
+                          />
+                          <IconButton
+                            aria-label="Remove image"
+                            size="small"
+                            onClick={() => {
+                              setSelectedImage(null);
+                              if (fileInputRef.current) fileInputRef.current.value = '';
+                            }}
+                            sx={{
+                              position: 'absolute',
+                              top: 4,
+                              right: 4,
+                              background: 'rgba(255,255,255,0.7)',
+                              zIndex: 2,
+                              '&:hover': { background: 'rgba(255,255,255,1)' }
+                            }}
+                          >
+                            <CloseIcon fontSize="small" />
+                          </IconButton>
+                        </Box>
+                        <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+                          {selectedImage.name}
+                        </Typography>
+                      </>
+                    ) : (
+                      <>
+                        <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+                          No image selected
+                        </Typography>
+                      </>
+                    )}
+                  </Box>
+                </Box>
                 <TextField
                   fullWidth
                   label="Book Title"
@@ -132,7 +229,7 @@ const BookUpload = () => {
                 />
                 <TextField
                   fullWidth
-                  label="Price"
+                  label="Actual Price"
                   name="price"
                   type="number"
                   value={bookData.price}
@@ -140,50 +237,37 @@ const BookUpload = () => {
                   margin="normal"
                   required
                 />
-              </Grid>
-              <Grid>
                 <TextField
                   fullWidth
                   label="Discount Price"
                   name="disc-price"
+                  type="number"
                   value={bookData['disc-price']}
                   onChange={handleInputChange}
                   margin="normal"
                   required
                 />
-                <Box sx={{ mt: 2 }}>
-                  <Typography variant="subtitle1" gutterBottom>
-                    Book Cover Image
-                  </Typography>
-                  <Input
-                    type="file"
-                    onChange={handleImageChange}
-                    sx={{ mb: 2 }}
-                    inputProps={{ accept: 'image/*' }}
-                  />
-                  {selectedImage && (
-                    <Box sx={{ mt: 2 }}>
-                      <Typography variant="body2" color="textSecondary">
-                        Selected file: {selectedImage.name}
-                      </Typography>
-                    </Box>
-                  )}
-                </Box>
               </Grid>
-              <Grid>
+              <Grid item xs={12} md={6}>
+                {/* You can add more fields or content here if needed */}
+              </Grid>
+              <Grid item xs={12}>
                 <Button
                   variant="contained"
                   color="primary"
                   type="submit"
                   disabled={loading}
-                  sx={{ mt: 2 }}
+                  size="large"
+                  startIcon={<CloudUploadIcon />}
+                  sx={{ mt: 2, px: 4, py: 1.5, fontWeight: 600, fontSize: 18, borderRadius: 2 }}
+                  fullWidth
                 >
-                  {loading ? <CircularProgress size={24} /> : 'Upload Book'}
+                  {loading ? <CircularProgress size={24} color="inherit" /> : 'Upload Book'}
                 </Button>
               </Grid>
             </Grid>
-          </Box>
-        </form>
+          </form>
+        </Box>
       </DashboardCard>
     </PageContainer>
   );
