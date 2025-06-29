@@ -19,13 +19,13 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: "Upload Book",
+    title: "Upload AFF Book",
     icon: IconBook,
     href: "/book-upload",
   },
   {
     id: uniqueId(),
-    title: "Books List",
+    title: "AFF Books List",
     icon: IconList,
     href: "/books-list",
   },
