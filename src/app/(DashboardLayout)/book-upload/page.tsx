@@ -1,13 +1,11 @@
 'use client';
 import { useState, useRef } from 'react';
+import Image from 'next/image';
 import {
   Box,
   Typography,
   TextField,
   Button,
-  Card,
-  CardContent,
-  Grid,
   Input,
   CircularProgress,
   Alert,
@@ -118,8 +116,8 @@ const BookUpload = () => {
             <Typography variant="h5" fontWeight={600} gutterBottom align="center" sx={{ mb: 3 }}>
               Enter Book Details
             </Typography>
-            <Grid container spacing={4}>
-              <Grid item xs={12} md={6}>
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 4 }}>
+              <Box sx={{ flex: 1 }}>
                 <Typography variant="subtitle1" fontWeight={500} sx={{ mb: 1 }}>
                   Book Cover Image
                 </Typography>
@@ -163,10 +161,18 @@ const BookUpload = () => {
                     {selectedImage ? (
                       <>
                         <Box sx={{ position: 'relative', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                          <img
+                          <Image
                             src={URL.createObjectURL(selectedImage)}
                             alt="Book Cover Preview"
-                            style={{ maxWidth: '100%', maxHeight: 120, borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
+                            width={200}
+                            height={120}
+                            style={{ 
+                              maxWidth: '100%', 
+                              maxHeight: 120, 
+                              borderRadius: 8, 
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                              objectFit: 'contain'
+                            }}
                           />
                           <IconButton
                             aria-label="Remove image"
@@ -193,7 +199,8 @@ const BookUpload = () => {
                       </>
                     ) : (
                       <>
-                        <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+                        <CloudUploadIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 1 }} />
+                        <Typography variant="body2" color="textSecondary">
                           No image selected
                         </Typography>
                       </>
@@ -247,25 +254,25 @@ const BookUpload = () => {
                   margin="normal"
                   required
                 />
-              </Grid>
-              <Grid item xs={12} md={6}>
+              </Box>
+              <Box sx={{ flex: 1 }}>
                 {/* You can add more fields or content here if needed */}
-              </Grid>
-              <Grid item xs={12}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  disabled={loading}
-                  size="large"
-                  startIcon={<CloudUploadIcon />}
-                  sx={{ mt: 2, px: 4, py: 1.5, fontWeight: 600, fontSize: 18, borderRadius: 2 }}
-                  fullWidth
-                >
-                  {loading ? <CircularProgress size={24} color="inherit" /> : 'Upload Book'}
-                </Button>
-              </Grid>
-            </Grid>
+              </Box>
+            </Box>
+            <Box sx={{ mt: 4 }}>
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                disabled={loading}
+                size="large"
+                startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <CloudUploadIcon />}
+                sx={{ mt: 2, px: 4, py: 1.5, fontWeight: 600, fontSize: 18, borderRadius: 2 }}
+                fullWidth
+              >
+                {loading ? 'Uploading...' : 'Upload Book'}
+              </Button>
+            </Box>
           </form>
         </Box>
       </DashboardCard>
