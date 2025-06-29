@@ -15,6 +15,22 @@ import { uniqueId } from "lodash";
 const Menuitems = [
   {
     navlabel: true,
+    subheader: "BOOKS",
+  },
+  {
+    id: uniqueId(),
+    title: "Upload Book",
+    icon: IconBook,
+    href: "/book-upload",
+  },
+  {
+    id: uniqueId(),
+    title: "Books List",
+    icon: IconList,
+    href: "/books-list",
+  },
+  {
+    navlabel: true,
     subheader: "HOME",
   },
 
@@ -55,22 +71,6 @@ const Menuitems = [
     title: "Register",
     icon: IconUserPlus,
     href: "/authentication/register",
-  },
-  {
-    navlabel: true,
-    subheader: "BOOKS",
-  },
-  {
-    id: uniqueId(),
-    title: "Upload Book",
-    icon: IconBook,
-    href: "/book-upload",
-  },
-  {
-    id: uniqueId(),
-    title: "Books List",
-    icon: IconList,
-    href: "/books-list",
   },
   {
     navlabel: true,
