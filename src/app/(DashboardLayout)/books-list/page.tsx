@@ -28,7 +28,8 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { collection, getDocs, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
-import { secondaryDb } from '@/utils/firebase';
+import { deleteObject, ref } from 'firebase/storage';
+import { secondaryDb, storage } from '@/utils/firebase';
 import { useRouter } from 'next/navigation';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
@@ -89,8 +90,28 @@ const BooksList = () => {
 
     setDeleteLoading(bookToDelete.id);
     try {
+      // Delete the Firestore document
       const bookRef = doc(secondaryDb, 'books-aff', bookToDelete.id);
       await deleteDoc(bookRef);
+      
+      // Delete the image from Firebase Storage
+      if (bookToDelete['image-url']) {
+        try {
+          // Extract the file path from the URL
+          const imageUrl = bookToDelete['image-url'];
+          const imagePath = imageUrl.split('/o/')[1]?.split('?')[0];
+          
+          if (imagePath) {
+            // Decode the URL-encoded path
+            const decodedPath = decodeURIComponent(imagePath);
+            const imageRef = ref(storage, decodedPath);
+            await deleteObject(imageRef);
+          }
+        } catch (storageError) {
+          console.warn('Failed to delete image from storage:', storageError);
+          // Don't fail the entire operation if image deletion fails
+        }
+      }
       
       // Remove the book from the local state
       setBooks(books.filter(book => book.id !== bookToDelete.id));
