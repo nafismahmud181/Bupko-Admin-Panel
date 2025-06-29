@@ -26,8 +26,10 @@ import {
   DialogContentText,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 import { collection, getDocs, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
 import { secondaryDb } from '@/utils/firebase';
+import { useRouter } from 'next/navigation';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
 
@@ -49,6 +51,7 @@ const BooksList = () => {
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [bookToDelete, setBookToDelete] = useState<Book | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -125,9 +128,19 @@ const BooksList = () => {
           </Alert>
         )}
         
-        <Typography variant="h6" sx={{ mb: 2 }}>
-          Total Books: {books.length}
-        </Typography>
+        <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
+          <Typography variant="h6">
+            Total Books: {books.length}
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={() => router.push('/book-upload')}
+          >
+            Add Book
+          </Button>
+        </Box>
 
         <TableContainer component={Paper} sx={{ mt: 2 }}>
           <Table>
