@@ -15,7 +15,9 @@ import {
   InputAdornment,
   IconButton,
   Alert,
-  CircularProgress
+  CircularProgress,
+  useTheme,
+  useMediaQuery
 } from "@mui/material";
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -32,6 +34,9 @@ const LoginModern = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+  
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleShowPassword = () => setShowPassword((show) => !show);
 
@@ -89,14 +94,48 @@ const LoginModern = () => {
   };
 
   return (
-    <Grid container sx={{ minHeight: "100vh" }}>
+    <Box sx={{ 
+      minHeight: "100vh",
+      display: "flex",
+      flexDirection: { xs: "column", md: "row" }
+    }}>
       {/* Left: Login Form */}
-      <Grid sx={{ display: "flex", alignItems: "center", justifyContent: "center", bgcolor: "background.default", flex: 1 }}>
-        <Box sx={{ width: "100%", maxWidth: 420, mx: "auto", p: 4 }}>
-          <Typography variant="h3" fontWeight={700} mb={1}>
+      <Box 
+        sx={{ 
+          display: "flex", 
+          alignItems: "center", 
+          justifyContent: "center", 
+          bgcolor: "background.default", 
+          p: { xs: 2, sm: 3, md: 4 },
+          minHeight: { xs: "auto", md: "100vh" },
+          flex: { xs: "none", md: 1 }
+        }}
+      >
+        <Box sx={{ 
+          width: "100%", 
+          maxWidth: { xs: "100%", sm: 420 }, 
+          mx: "auto",
+          py: { xs: 3, md: 0 }
+        }}>
+          <Typography 
+            variant="h3" 
+            fontWeight={700} 
+            mb={1}
+            sx={{
+              fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
+              textAlign: { xs: "center", md: "left" }
+            }}
+          >
             Sign In
           </Typography>
-          <Typography color="textSecondary" mb={3}>
+          <Typography 
+            color="textSecondary" 
+            mb={3}
+            sx={{
+              textAlign: { xs: "center", md: "left" },
+              fontSize: { xs: "0.875rem", md: "1rem" }
+            }}
+          >
             Enter your email and password to sign in!
           </Typography>
           
@@ -119,6 +158,12 @@ const LoginModern = () => {
               autoComplete="email"
               disabled={loading}
               placeholder="Enter your email"
+              sx={{
+                '& .MuiInputBase-root': {
+                  height: { xs: 56, md: 48 },
+                  fontSize: { xs: '1rem', md: '0.875rem' }
+                }
+              }}
             />
             <TextField
               label="Password"
@@ -131,26 +176,59 @@ const LoginModern = () => {
               autoComplete="current-password"
               disabled={loading}
               placeholder="Enter your password"
+              sx={{
+                '& .MuiInputBase-root': {
+                  height: { xs: 56, md: 48 },
+                  fontSize: { xs: '1rem', md: '0.875rem' }
+                }
+              }}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton onClick={handleShowPassword} edge="end" disabled={loading}>
+                    <IconButton 
+                      onClick={handleShowPassword} 
+                      edge="end" 
+                      disabled={loading}
+                      sx={{
+                        width: { xs: 48, md: 40 },
+                        height: { xs: 48, md: 40 }
+                      }}
+                    >
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
                 )
               }}
             />
-            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mt: 1, mb: 2 }}>
+            <Stack 
+              direction="row" 
+              alignItems="center" 
+              justifyContent="space-between" 
+              sx={{ 
+                mt: 1, 
+                mb: 2,
+                flexDirection: { xs: "column", sm: "row" },
+                alignItems: { xs: "flex-start", sm: "center" },
+                gap: { xs: 1, sm: 0 }
+              }}
+            >
               <FormControlLabel
                 control={
                   <Checkbox 
                     checked={keepLoggedIn} 
                     onChange={e => setKeepLoggedIn(e.target.checked)} 
                     disabled={loading}
+                    sx={{
+                      '& .MuiSvgIcon-root': {
+                        fontSize: { xs: '1.5rem', md: '1.25rem' }
+                      }
+                    }}
                   />
                 }
                 label="Keep me logged in"
+                sx={{
+                  fontSize: { xs: '0.875rem', md: '0.75rem' }
+                }}
               />
             </Stack>
             <Button 
@@ -159,7 +237,12 @@ const LoginModern = () => {
               color="primary" 
               fullWidth 
               size="large" 
-              sx={{ fontWeight: 600, mb: 2 }}
+              sx={{ 
+                fontWeight: 600, 
+                mb: 2,
+                height: { xs: 56, md: 48 },
+                fontSize: { xs: '1rem', md: '0.875rem' }
+              }}
               disabled={loading}
             >
               {loading ? (
@@ -173,24 +256,49 @@ const LoginModern = () => {
             </Button>
           </form>
         </Box>
-      </Grid>
+      </Box>
+      
       {/* Right: Branding */}
-      <Grid sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        bgcolor: "#181f4b",
-        color: "#fff",
-        position: "relative",
-        minHeight: "100vh",
-        flex: 1
-      }}>
-        <Box sx={{ width: "100%", textAlign: "center", position: "relative", zIndex: 1 }}>
-          <Typography variant="h4" fontWeight={700} mb={1}>
+      <Box 
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          bgcolor: "#181f4b",
+          color: "#fff",
+          position: "relative",
+          minHeight: { xs: "20vh", sm: "40vh", md: "100vh" },
+          order: { xs: -1, md: 0 },
+          flex: { xs: "none", md: 1 }
+        }}
+      >
+        <Box sx={{ 
+          width: "100%", 
+          textAlign: "center", 
+          position: "relative", 
+          zIndex: 1,
+          p: { xs: 3, md: 4 }
+        }}>
+          <Typography 
+            variant="h4" 
+            fontWeight={700} 
+            mb={1}
+            sx={{
+              fontSize: { xs: "1.75rem", sm: "2rem", md: "2.125rem" }
+            }}
+          >
             TailAdmin
           </Typography>
-          <Typography variant="subtitle1" color="#bfc8e2">
-            Free and Open-Source Tailwind CSS Admin<br />Dashboard Template
+          <Typography 
+            variant="subtitle1" 
+            color="#bfc8e2"
+            sx={{
+              fontSize: { xs: "0.875rem", md: "1rem" },
+              lineHeight: { xs: 1.4, md: 1.5 }
+            }}
+          >
+            Free and Open-Source Tailwind CSS Admin<br />
+            Dashboard Template
           </Typography>
         </Box>
         {/* Decorative grid background */}
@@ -202,12 +310,14 @@ const LoginModern = () => {
             width: "100%",
             height: "100%",
             zIndex: 0,
-            background:
-              "repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 40px), repeating-linear-gradient(180deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 40px)",
+            background: {
+              xs: "repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 20px), repeating-linear-gradient(180deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 20px)",
+              md: "repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 40px), repeating-linear-gradient(180deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 40px)"
+            }
           }}
         />
-      </Grid>
-    </Grid>
+      </Box>
+    </Box>
   );
 };
 
