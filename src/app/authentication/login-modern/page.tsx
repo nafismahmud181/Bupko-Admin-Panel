@@ -120,7 +120,7 @@ const LoginModern = () => {
           <Typography 
             variant="h3" 
             fontWeight={700} 
-            mb={1}
+            mb={3}
             sx={{
               fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
               textAlign: { xs: "center", md: "left" }
@@ -145,7 +145,7 @@ const LoginModern = () => {
             </Alert>
           )}
           
-          <Divider sx={{ my: 3 }}>Or</Divider>
+
           <form onSubmit={handleSubmit}>
             <TextField
               label="Email"
@@ -282,12 +282,12 @@ const LoginModern = () => {
           <Typography 
             variant="h4" 
             fontWeight={700} 
-            mb={1}
+            mb={3}
             sx={{
               fontSize: { xs: "1.75rem", sm: "2rem", md: "2.125rem" }
             }}
           >
-            TailAdmin
+            Bupko
           </Typography>
           <Typography 
             variant="subtitle1" 
@@ -297,8 +297,7 @@ const LoginModern = () => {
               lineHeight: { xs: 1.4, md: 1.5 }
             }}
           >
-            Free and Open-Source Tailwind CSS Admin<br />
-            Dashboard Template
+            Dive into timeless tales and modern<br></br> masterpieces.
           </Typography>
         </Box>
         {/* Decorative grid background */}
