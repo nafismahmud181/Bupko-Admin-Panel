@@ -24,6 +24,10 @@ import {
   DialogContent,
   DialogActions,
   DialogContentText,
+  useTheme,
+  useMediaQuery,
+  Stack,
+  Divider
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
@@ -53,6 +57,9 @@ const BooksList = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [bookToDelete, setBookToDelete] = useState<Book | null>(null);
   const router = useRouter();
+  
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -149,8 +156,22 @@ const BooksList = () => {
           </Alert>
         )}
         
-        <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
-          <Typography variant="h6">
+        <Box 
+          display="flex" 
+          justifyContent="space-between" 
+          alignItems="center" 
+          sx={{ 
+            mb: 2,
+            flexDirection: { xs: "column", sm: "row" },
+            gap: { xs: 2, sm: 0 }
+          }}
+        >
+          <Typography 
+            variant="h6"
+            sx={{
+              fontSize: { xs: "1.1rem", md: "1.25rem" }
+            }}
+          >
             Total Books: {books.length}
           </Typography>
           <Button
@@ -158,97 +179,232 @@ const BooksList = () => {
             color="primary"
             startIcon={<AddIcon />}
             onClick={() => router.push('/book-upload')}
+            sx={{
+              width: { xs: "100%", sm: "auto" },
+              height: { xs: 48, md: 40 }
+            }}
           >
             Add Book
           </Button>
         </Box>
 
-        <TableContainer component={Paper} sx={{ mt: 2 }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Image</TableCell>
-                <TableCell>Title</TableCell>
-                <TableCell>Author</TableCell>
-                <TableCell>Actual Price</TableCell>
-                <TableCell>Discount Price</TableCell>
-                <TableCell>Affiliate Link</TableCell>
-                <TableCell>Created At</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {books.map((book) => (
-                <TableRow key={book.id}>
-                  <TableCell>
-                    <Avatar
-                      src={book['image-url']}
-                      alt={book.title}
-                      sx={{ width: 50, height: 50 }}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      {book.title}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>{book.author}</TableCell>
-                  <TableCell>
-                    <Chip 
-                      label={`$${book['actual-price']}`} 
-                      color="primary" 
-                      size="small" 
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Chip 
-                      label={`$${book['disc-price']}`} 
-                      color="secondary" 
-                      size="small" 
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      href={book['aff-link']}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      size="small"
-                      variant="outlined"
-                    >
-                      View Link
-                    </Button>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="caption" color="textSecondary">
-                      {new Date(book.createdAt).toLocaleDateString()}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <IconButton
-                      color="error"
-                      onClick={() => handleDeleteClick(book)}
-                      disabled={deleteLoading === book.id}
-                      size="small"
-                    >
-                      {deleteLoading === book.id ? (
-                        <CircularProgress size={20} />
-                      ) : (
-                        <DeleteIcon />
-                      )}
-                    </IconButton>
-                  </TableCell>
+        {/* Desktop Table View */}
+        {!isMobile && (
+          <TableContainer component={Paper} sx={{ mt: 2 }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Image</TableCell>
+                  <TableCell>Title</TableCell>
+                  <TableCell>Author</TableCell>
+                  <TableCell>Actual Price</TableCell>
+                  <TableCell>Discount Price</TableCell>
+                  <TableCell>Affiliate Link</TableCell>
+                  <TableCell>Created At</TableCell>
+                  <TableCell>Actions</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {books.map((book) => (
+                  <TableRow key={book.id}>
+                    <TableCell>
+                      <Avatar
+                        src={book['image-url']}
+                        alt={book.title}
+                        sx={{ width: 50, height: 50 }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="subtitle2" fontWeight={600}>
+                        {book.title}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>{book.author}</TableCell>
+                    <TableCell>
+                      <Chip 
+                        label={`$${book['actual-price']}`} 
+                        color="primary" 
+                        size="small" 
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Chip 
+                        label={`$${book['disc-price']}`} 
+                        color="secondary" 
+                        size="small" 
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        href={book['aff-link']}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        size="small"
+                        variant="outlined"
+                      >
+                        View Link
+                      </Button>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="caption" color="textSecondary">
+                        {new Date(book.createdAt).toLocaleDateString()}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <IconButton
+                        color="error"
+                        onClick={() => handleDeleteClick(book)}
+                        disabled={deleteLoading === book.id}
+                        size="small"
+                      >
+                        {deleteLoading === book.id ? (
+                          <CircularProgress size={20} />
+                        ) : (
+                          <DeleteIcon />
+                        )}
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+
+        {/* Mobile Card View */}
+        {isMobile && (
+          <Grid container spacing={2} sx={{ mt: 2 }}>
+            {books.map((book) => (
+              <Grid item xs={12} key={book.id}>
+                <Card sx={{ 
+                  p: 2,
+                  '&:hover': {
+                    boxShadow: 3
+                  }
+                }}>
+                  <CardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
+                    <Box display="flex" alignItems="flex-start" gap={2}>
+                      <Avatar
+                        src={book['image-url']}
+                        alt={book.title}
+                        sx={{ 
+                          width: 60, 
+                          height: 60,
+                          flexShrink: 0
+                        }}
+                      />
+                      <Box flex={1} minWidth={0}>
+                        <Typography 
+                          variant="h6" 
+                          fontWeight={600}
+                          sx={{
+                            fontSize: "1rem",
+                            mb: 0.5,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap"
+                          }}
+                        >
+                          {book.title}
+                        </Typography>
+                        <Typography 
+                          variant="body2" 
+                          color="textSecondary"
+                          sx={{ mb: 1 }}
+                        >
+                          by {book.author}
+                        </Typography>
+                        
+                        <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
+                          <Chip 
+                            label={`$${book['actual-price']}`} 
+                            color="primary" 
+                            size="small"
+                            sx={{ fontSize: "0.75rem" }}
+                          />
+                          <Chip 
+                            label={`$${book['disc-price']}`} 
+                            color="secondary" 
+                            size="small"
+                            sx={{ fontSize: "0.75rem" }}
+                          />
+                        </Stack>
+                        
+                        <Typography 
+                          variant="caption" 
+                          color="textSecondary"
+                          sx={{ display: "block", mb: 2 }}
+                        >
+                          Added: {new Date(book.createdAt).toLocaleDateString()}
+                        </Typography>
+                        
+                        <Stack 
+                          direction="row" 
+                          spacing={1}
+                          sx={{
+                            justifyContent: "space-between",
+                            alignItems: "center"
+                          }}
+                        >
+                          <Button
+                            href={book['aff-link']}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            size="small"
+                            variant="outlined"
+                            sx={{
+                              fontSize: "0.75rem",
+                              minWidth: "auto",
+                              px: 2
+                            }}
+                          >
+                            View Link
+                          </Button>
+                          <IconButton
+                            color="error"
+                            onClick={() => handleDeleteClick(book)}
+                            disabled={deleteLoading === book.id}
+                            size="small"
+                            sx={{
+                              width: 40,
+                              height: 40
+                            }}
+                          >
+                            {deleteLoading === book.id ? (
+                              <CircularProgress size={20} />
+                            ) : (
+                              <DeleteIcon />
+                            )}
+                          </IconButton>
+                        </Stack>
+                      </Box>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        )}
 
         {books.length === 0 && !loading && (
           <Box textAlign="center" py={4}>
-            <Typography variant="h6" color="textSecondary">
+            <Typography 
+              variant="h6" 
+              color="textSecondary"
+              sx={{
+                fontSize: { xs: "1.1rem", md: "1.25rem" }
+              }}
+            >
               No books found in the database
             </Typography>
-            <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+            <Typography 
+              variant="body2" 
+              color="textSecondary" 
+              sx={{ 
+                mt: 1,
+                fontSize: { xs: "0.875rem", md: "1rem" }
+              }}
+            >
               Upload some books to see them here
             </Typography>
           </Box>
@@ -260,6 +416,8 @@ const BooksList = () => {
         onClose={handleDeleteCancel}
         aria-labelledby="delete-dialog-title"
         aria-describedby="delete-dialog-description"
+        fullWidth
+        maxWidth="sm"
       >
         <DialogTitle id="delete-dialog-title">
           Confirm Delete
