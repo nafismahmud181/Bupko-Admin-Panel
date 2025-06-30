@@ -30,6 +30,18 @@ const Menuitems = [
     href: "/books-list",
   },
   {
+    id: uniqueId(),
+    title: "Banner Upload",
+    icon: IconAperture,
+    href: "/banner-upload",
+  },
+  {
+    id: uniqueId(),
+    title: "Banners List",
+    icon: IconList,
+    href: "/banner-list",
+  },
+  {
     navlabel: true,
     subheader: "HOME",
   },
@@ -55,22 +67,6 @@ const Menuitems = [
     title: "Shadow",
     icon: IconCopy,
     href: "/utilities/shadow",
-  },
-  {
-    navlabel: true,
-    subheader: "AUTH",
-  },
-  {
-    id: uniqueId(),
-    title: "Login",
-    icon: IconLogin,
-    href: "/authentication/login",
-  },
-  {
-    id: uniqueId(),
-    title: "Register",
-    icon: IconUserPlus,
-    href: "/authentication/register",
   },
   {
     navlabel: true,
