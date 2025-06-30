@@ -5,7 +5,6 @@ import {
   Box,
   Typography,
   Card,
-  CardContent,
   CardActions,
   Button,
   CircularProgress,
@@ -16,7 +15,6 @@ import {
   DialogActions,
   DialogContentText,
   IconButton,
-  Grid
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { collection, getDocs, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
@@ -128,31 +126,39 @@ const BannerList = () => {
           </Alert>
         )}
         
-        <Grid container spacing={3}>
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: {
+              xs: '1fr',
+              sm: 'repeat(2, 1fr)',
+              md: 'repeat(3, 1fr)',
+            },
+            gap: 3,
+          }}
+        >
           {banners.map((banner) => (
-            <Grid item xs={12} sm={6} md={4} key={banner.id}>
-              <Card sx={{ position: 'relative' }}>
-                <Box sx={{ height: 200, position: 'relative' }}>
-                  <Image
-                    src={banner.imageUrl}
-                    alt="Banner Image"
-                    layout="fill"
-                    objectFit="cover"
-                  />
-                </Box>
-                <CardActions sx={{ justifyContent: 'flex-end' }}>
-                  <IconButton 
-                    onClick={() => handleDeleteClick(banner)} 
-                    disabled={deleteLoading === banner.id}
-                    size="large"
-                  >
-                    {deleteLoading === banner.id ? <CircularProgress size={24} /> : <DeleteIcon />}
-                  </IconButton>
-                </CardActions>
-              </Card>
-            </Grid>
+            <Card sx={{ position: 'relative' }} key={banner.id}>
+              <Box sx={{ height: 200, position: 'relative' }}>
+                <Image
+                  src={banner.imageUrl}
+                  alt="Banner Image"
+                  layout="fill"
+                  objectFit="cover"
+                />
+              </Box>
+              <CardActions sx={{ justifyContent: 'flex-end' }}>
+                <IconButton
+                  onClick={() => handleDeleteClick(banner)}
+                  disabled={deleteLoading === banner.id}
+                  size="large"
+                >
+                  {deleteLoading === banner.id ? <CircularProgress size={24} /> : <DeleteIcon />}
+                </IconButton>
+              </CardActions>
+            </Card>
           ))}
-        </Grid>
+        </Box>
 
         {banners.length === 0 && !loading && (
           <Box textAlign="center" mt={4}>
