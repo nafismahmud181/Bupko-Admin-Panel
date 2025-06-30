@@ -5,7 +5,6 @@ import {
   Typography,
   Card,
   CardContent,
-  Grid,
   Table,
   TableBody,
   TableCell,
@@ -273,10 +272,10 @@ const BooksList = () => {
 
         {/* Mobile Card View */}
         {isMobile && (
-          <Grid container spacing={2} sx={{ mt: 2 }}>
-            {books.map((book) => (
-              <Grid item xs={12} key={book.id}>
-                <Card sx={{ 
+          <Box sx={{ mt: 2 }}>
+            <Stack spacing={2}>
+              {books.map((book) => (
+                <Card key={book.id} sx={{ 
                   p: 2,
                   '&:hover': {
                     boxShadow: 3
@@ -381,9 +380,9 @@ const BooksList = () => {
                     </Box>
                   </CardContent>
                 </Card>
-              </Grid>
-            ))}
-          </Grid>
+              ))}
+            </Stack>
+          </Box>
         )}
 
         {books.length === 0 && !loading && (
