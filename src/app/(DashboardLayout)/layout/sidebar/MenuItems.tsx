@@ -42,6 +42,18 @@ const Menuitems = [
     href: "/banner-list",
   },
   {
+    id: uniqueId(),
+    title: "Categories List",
+    icon: IconList,
+    href: "/categories-list",
+  },
+  {
+    id: uniqueId(),
+    title: "Category Upload",
+    icon: IconAperture,
+    href: "/category-upload",
+  },
+  {
     navlabel: true,
     subheader: "HOME",
   },
