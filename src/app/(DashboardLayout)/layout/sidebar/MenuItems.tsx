@@ -15,7 +15,7 @@ import { uniqueId } from "lodash";
 const Menuitems = [
   {
     navlabel: true,
-    subheader: "BOOKS",
+    subheader: "AFF BOOKS",
   },
   {
     id: uniqueId(),
@@ -30,6 +30,10 @@ const Menuitems = [
     href: "/books-list",
   },
   {
+    navlabel: true,
+    subheader: "BANNER",
+  },
+  {
     id: uniqueId(),
     title: "Banner Upload",
     icon: IconAperture,
@@ -40,6 +44,10 @@ const Menuitems = [
     title: "Banners List",
     icon: IconList,
     href: "/banner-list",
+  },
+  {
+    navlabel: true,
+    subheader: "CATEGORIES",
   },
   {
     id: uniqueId(),
