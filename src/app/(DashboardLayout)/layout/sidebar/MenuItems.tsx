@@ -51,15 +51,15 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: "Categories List",
-    icon: IconList,
-    href: "/categories-list",
-  },
-  {
-    id: uniqueId(),
     title: "Category Upload",
     icon: IconAperture,
     href: "/category-upload",
+  },
+  {
+    id: uniqueId(),
+    title: "Categories List",
+    icon: IconList,
+    href: "/categories-list",
   },
   {
     navlabel: true,
